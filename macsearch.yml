@@ -1,0 +1,30 @@
+---
+- hosts: localhost
+  connection: local
+  gather_facts: no
+
+  vars:
+    api_url: "https://api.macaddress.io/v1"
+    output: "json"
+
+    api_key: ""
+    mac: "44:38:39:ff:ef:57"
+
+  tasks:
+    - name: Save response from API
+      uri:
+        url: "{{ api_url }}?output={{ output }}&search={{ mac }}"
+        status_code: 200, 400, 401, 402, 422, 429
+        headers:
+          X-Authentication-Token: "{{ api_key }}"
+      register: api_response
+
+    - name: Print API response error
+      when: api_response.status != 200
+      fail:
+        msg: "API error: {{ api_response.json.error }}"
+
+    - name: Print API response
+      debug:
+        msg: "Company that manufactured the device with MAC address {{ mac }} is:
+              {{ api_response.json.vendorDetails.companyName }}"

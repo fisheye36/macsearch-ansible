@@ -7,7 +7,7 @@
     api_url: "https://api.macaddress.io/v1"
     output: "json"
 
-    api_key: ""
+    api_key: "{{ lookup('env', 'MACSEARCH_API_KEY') }}"
     mac: "44:38:39:ff:ef:57"
 
   tasks:
